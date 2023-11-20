@@ -3,20 +3,18 @@
 #  Data blocks next to resources that are referencing them
 #  Reduce hard coded inputs where possible. They are used below for simplicity to show structure
 
-/* local {
-  # Local that is a map that is used for something
-  example-local {
-    key = value
-  }
+data "tfe_organization" "hvd" {
+  name = "hvd"
 }
 
-data "vault_auth_backend" "kubernetes" {
-  namespace = var.namespace
-  path      = "kubernetes"
+resource "tfe_agent_pool" "test-agent-pool" {
+  name         = "my-agent-pool-name"
+  organization = tfe_organization.test-organization.name
 }
 
-resource "vault_policy" "policies" {
-  namespace = var.namespace
-  name      = "name"
-  policy    = "policy"
-} */
+resource "tfe_workspace" "test" {
+  name           = "my-test-workspace-name"
+  organization   = tfe_organization.hvd.name
+  agent_pool_id  = tfe_agent_pool.test-agent-pool.id
+  execution_mode = "agent"
+}
