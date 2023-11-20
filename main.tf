@@ -3,18 +3,16 @@
 #  Data blocks next to resources that are referencing them
 #  Reduce hard coded inputs where possible. They are used below for simplicity to show structure
 
-data "tfe_organization" "hvd" {
-  name = "hvd"
+resource "random_pet" "ws" {
+  keepers = {
+    # A changing value to ensure the string is always different
+    always_change = "${timestamp()}"
+  }
+
 }
 
-resource "tfe_agent_pool" "test-agent-pool" {
-  name         = "my-agent-pool-name"
-  organization = tfe_organization.test-organization.name
-}
 
 resource "tfe_workspace" "test" {
-  name           = "my-test-workspace-name"
-  organization   = tfe_organization.hvd.name
-  agent_pool_id  = tfe_agent_pool.test-agent-pool.id
-  execution_mode = "agent"
+  name         = "workspace-${random_pet.ws.id}"
+  organization = "hvd"
 }
